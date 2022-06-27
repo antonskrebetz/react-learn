@@ -1,0 +1,14 @@
+.authorItem {
+    margin-bottom: 10px;
+    width: 400px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.authorItem:last-child {
+    margin-bottom: 0;
+}
+
+.name {
+    margin-right: 60px;
+}

@@ -1,0 +1,13 @@
+.button {
+    padding: 5px 30px;
+    min-width: 100px;
+    background: none;
+    border: 1px rebeccapurple solid;
+    cursor: pointer;
+    transition: all 0.2s ease-in;
+}
+
+.button:hover {
+    background-color: cornflowerblue;
+    color: white;
+}
