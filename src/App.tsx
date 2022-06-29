@@ -47,7 +47,6 @@ function App() {
 		if (
 			course.title.length < 2 ||
 			course.description.length < 2 ||
-			course.duration === '' ||
 			course.duration === 0 ||
 			course.authors.length < 1
 		) {
@@ -89,8 +88,8 @@ function App() {
 			) : (
 				<CreateCourse
 					allAppAuthors={authors}
-					handleAddAuthor={handleAddAuthor}
-					handleAddNewCourse={handleAddNewCourse}
+					onHandleAddAuthor={handleAddAuthor}
+					onHandleAddNewCourse={handleAddNewCourse}
 				/>
 			)}
 		</>

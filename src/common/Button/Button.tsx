@@ -5,11 +5,21 @@ interface IButtonProps {
 	buttonText: string;
 	onClick?: any;
 	addClass?: string;
+	buttonType?: 'button' | 'submit' | 'reset';
 }
 
-export const Button = ({ buttonText, onClick, addClass }: IButtonProps) => {
+export const Button = ({
+	buttonText,
+	onClick,
+	addClass,
+	buttonType = 'button',
+}: IButtonProps) => {
 	return (
-		<button className={classnames(addClass, styles.button)} onClick={onClick}>
+		<button
+			type={buttonType}
+			className={classnames(addClass, styles.button)}
+			onClick={onClick}
+		>
 			{buttonText}
 		</button>
 	);

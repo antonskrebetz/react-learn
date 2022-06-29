@@ -9,21 +9,21 @@ import { v4 as uuidv4 } from 'uuid';
 
 interface ICreateCourseProps {
 	allAppAuthors: IAuthor[];
-	handleAddAuthor: (name: string) => void;
-	handleAddNewCourse: (course: ICourse) => void;
+	onHandleAddAuthor: (name: string) => void;
+	onHandleAddNewCourse: (course: ICourse) => void;
 }
 
 export const CreateCourse = ({
 	allAppAuthors,
-	handleAddAuthor,
-	handleAddNewCourse,
+	onHandleAddAuthor,
+	onHandleAddNewCourse,
 }: ICreateCourseProps) => {
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
 	const [descriptionError, setDescriptionError] = useState(false);
 	const [courseAuthors, setCourseAuthors] = useState<IAuthor[]>([]);
 	const [createAuthor, setCreateAuthor] = useState('');
-	const [duration, setDuration] = useState<number | ''>('');
+	const [duration, setDuration] = useState(0);
 
 	const handleTitle = (value: string) => {
 		setTitle(value);
@@ -43,13 +43,11 @@ export const CreateCourse = ({
 	};
 
 	const handleDuration = (value: string) => {
-		if (value === '') {
-			setDuration('');
-			return;
+		if (!value) {
+			setDuration(0);
 		}
-
-		const time = Number.parseInt(value);
-		Object.is(time, NaN) || setDuration(time);
+		const time = Number(value);
+		time && setDuration(time);
 	};
 
 	const handleAddCourseAuthor = ({ name, id }: IAuthor) => {
@@ -91,7 +89,7 @@ export const CreateCourse = ({
 					addClass={styles.createBtn}
 					buttonText='Create course'
 					onClick={() =>
-						handleAddNewCourse({
+						onHandleAddNewCourse({
 							id: uuidv4(),
 							creationDate: new Date().toLocaleDateString(),
 							title,
@@ -137,7 +135,7 @@ export const CreateCourse = ({
 						<Button
 							buttonText={'Create author'}
 							onClick={() => {
-								handleAddAuthor(createAuthor);
+								onHandleAddAuthor(createAuthor);
 								setCreateAuthor('');
 							}}
 						/>
@@ -163,7 +161,7 @@ export const CreateCourse = ({
 							labelText={'Duration'}
 							placeholderText={'Enter duration in minutes...'}
 							onChange={handleDuration}
-							value={duration}
+							value={!duration ? '' : duration}
 							durationInput
 						/>
 						<div>
