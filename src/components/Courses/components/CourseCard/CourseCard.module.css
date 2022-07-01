@@ -1,0 +1,42 @@
+.courseCard {
+    margin-bottom: 20px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    border: 1px turquoise solid;
+}
+
+.courseCard:last-child {
+    margin-bottom: 0;
+}
+
+.leftSection {
+    margin-right: 20px;
+}
+
+.title {
+    margin-bottom: 20px;
+}
+
+.description {
+    font-size: 14px;
+}
+
+.detailBlock {
+    width: 300px;
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.detailBlockTitle {
+    margin-right: 5px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.detailBlockInfo {
+    font-size: 14px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}

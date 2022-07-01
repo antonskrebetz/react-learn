@@ -1,0 +1,9 @@
+.searchBar {
+    display: flex;
+    justify-content: space-between;
+    min-width: 400px;
+}
+
+.input {
+    width: 100%;
+}

@@ -1,0 +1,10 @@
+.main {
+    padding: 20px;
+    border: 1px blue solid;
+}
+
+.appBar {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+}

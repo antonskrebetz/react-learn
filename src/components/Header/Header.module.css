@@ -1,0 +1,17 @@
+.header {
+    margin-bottom: 20px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    border: 1px rgb(244, 82, 82) solid;
+}
+
+.loginSection {
+    display: flex;
+    align-items: center;
+}
+
+.name {
+    margin-right: 20px;
+    font-weight: 700;
+}
