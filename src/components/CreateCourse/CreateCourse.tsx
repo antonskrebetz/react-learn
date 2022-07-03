@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { Dispatch, SetStateAction, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../../common/Button/Button';
 import { Input } from '../../common/Input/Input';
 import { AuthorItem } from './components/AuthorItem/AuthorItem';
@@ -10,13 +11,15 @@ import { v4 as uuidv4 } from 'uuid';
 interface ICreateCourseProps {
 	allAppAuthors: IAuthor[];
 	onHandleAddAuthor: (name: string) => void;
-	onHandleAddNewCourse: (course: ICourse) => void;
+	courses: ICourse[];
+	setCourses: Dispatch<SetStateAction<ICourse[]>>;
 }
 
 export const CreateCourse = ({
 	allAppAuthors,
 	onHandleAddAuthor,
-	onHandleAddNewCourse,
+	courses,
+	setCourses,
 }: ICreateCourseProps) => {
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
@@ -24,6 +27,21 @@ export const CreateCourse = ({
 	const [courseAuthors, setCourseAuthors] = useState<IAuthor[]>([]);
 	const [createAuthor, setCreateAuthor] = useState('');
 	const [duration, setDuration] = useState(0);
+
+	const navigate = useNavigate();
+	const handleAddNewCourse = (course: ICourse) => {
+		if (
+			course.title.length < 2 ||
+			course.description.length < 2 ||
+			course.duration === 0 ||
+			course.authors.length < 1
+		) {
+			alert('Please, fill in all fields');
+		} else {
+			setCourses([...courses, course]);
+			navigate('/courses');
+		}
+	};
 
 	const handleTitle = (value: string) => {
 		setTitle(value);
@@ -89,7 +107,7 @@ export const CreateCourse = ({
 					addClass={styles.createBtn}
 					buttonText='Create course'
 					onClick={() =>
-						onHandleAddNewCourse({
+						handleAddNewCourse({
 							id: uuidv4(),
 							creationDate: new Date().toLocaleDateString(),
 							title,

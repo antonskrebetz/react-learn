@@ -1,0 +1,44 @@
+.wrapper {
+    border: 1px solid darkblue;
+}
+
+.container {
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.content {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.input {
+    margin-bottom: 10px;
+}
+
+.button {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.accountMessage {
+    font-size: 12px;
+    text-align: center;
+}
+
+.accountBtn {
+    text-decoration: none;
+    color: red;
+}
+
+.accountBtn:hover {
+    text-decoration: underline;
+}

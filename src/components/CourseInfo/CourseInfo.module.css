@@ -1,0 +1,43 @@
+.container {
+    padding: 20px 60px;
+    border: 1px green solid;
+}
+
+.backButton {
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.title {
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+}
+
+.description {
+    width: 700px;
+}
+
+.props {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.propsBlock {
+    margin-bottom: 20px;
+    display: flex;
+}
+
+.propsTitle {
+    margin-right: 10px;
+    font-weight: 700;
+}
+
+.propsAuthor {
+    margin-bottom: 10px;
+}

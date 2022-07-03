@@ -1,4 +1,7 @@
-export const getCourseDuration = (number: number) => {
+export const getCourseDuration = (number: number | undefined) => {
+	if (number === undefined) {
+		return null;
+	}
 	const minutes = number % 60;
 	const hours = Math.floor(number / 60);
 
