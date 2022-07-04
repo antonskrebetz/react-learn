@@ -1,23 +1,25 @@
+import {
+	BrowserRouter as Router,
+	Routes,
+	Route,
+	Navigate,
+} from 'react-router-dom';
 import { Header } from './components/Header/Header';
-import { SearchBar } from './components/Courses/components/SearchBar/SearchBar';
+import { Login } from './components/Login/Login';
+import { Registration } from './components/Registration/Registration';
 import { Courses } from './components/Courses/Courses';
-import styles from './App.module.css';
-import { Button } from './common/Button/Button';
+import { CourseInfo } from './components/CourseInfo/CourseInfo';
 import { CreateCourse } from './components/CreateCourse/CreateCourse';
+import { AuthComponent } from './components/AuthComponent/AuthComponent';
 import { useMemo, useState } from 'react';
-import { mockedAuthorsList, mockedCoursesList, ICourse } from './mockData';
+import { mockedAuthorsList, mockedCoursesList } from './mockData';
 import { v4 as uuidv4 } from 'uuid';
 
 function App() {
 	const [courses, setCourses] = useState(mockedCoursesList);
 	const [authors, setAuthors] = useState(mockedAuthorsList);
 	const [search, setSearch] = useState('');
-	const [isCourses, setIsCourses] = useState(true);
 	const [showSearchCourses, setShowSearchCourses] = useState(false);
-
-	const onClickAddNewCourse = () => {
-		setIsCourses(false);
-	};
 
 	const handleSearchInput = (value: string) => {
 		if (search === '') {
@@ -43,20 +45,6 @@ function App() {
 		]);
 	};
 
-	const handleAddNewCourse = (course: ICourse) => {
-		if (
-			course.title.length < 2 ||
-			course.description.length < 2 ||
-			course.duration === 0 ||
-			course.authors.length < 1
-		) {
-			alert('Please, fill in all fields');
-		} else {
-			setCourses([...courses, course]);
-			setIsCourses(true);
-		}
-	};
-
 	const filterCourses = useMemo(
 		() =>
 			courses.filter(
@@ -68,31 +56,43 @@ function App() {
 	);
 
 	return (
-		<>
+		<Router>
 			<Header />
-			{isCourses ? (
-				<div className={styles.main}>
-					<div className={styles.appBar}>
-						<SearchBar
-							onChange={handleSearchInput}
-							onClick={handleClickSearchButton}
-							value={search}
-						/>
-						<Button buttonText='Add new course' onClick={onClickAddNewCourse} />
-					</div>
-					<Courses
-						courses={showSearchCourses ? filterCourses : courses}
-						authors={authors}
+			<Routes>
+				<Route path='login' element={<Login />} />
+				<Route path='registration' element={<Registration />} />
+				<Route path='/' element={<AuthComponent />}>
+					<Route path='/' element={<Navigate to='/courses' />} />
+					<Route
+						path='courses'
+						element={
+							<Courses
+								courses={showSearchCourses ? filterCourses : courses}
+								authors={authors}
+								handleSearchInput={handleSearchInput}
+								handleClickSearchButton={handleClickSearchButton}
+								search={search}
+							/>
+						}
 					/>
-				</div>
-			) : (
-				<CreateCourse
-					allAppAuthors={authors}
-					onHandleAddAuthor={handleAddAuthor}
-					onHandleAddNewCourse={handleAddNewCourse}
-				/>
-			)}
-		</>
+					<Route
+						path='courses/add'
+						element={
+							<CreateCourse
+								allAppAuthors={authors}
+								onHandleAddAuthor={handleAddAuthor}
+								courses={courses}
+								setCourses={setCourses}
+							/>
+						}
+					/>
+					<Route
+						path='courses/:courseID'
+						element={<CourseInfo courses={courses} authors={authors} />}
+					/>
+				</Route>
+			</Routes>
+		</Router>
 	);
 }
 
