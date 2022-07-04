@@ -2,11 +2,11 @@ import { Navigate, Outlet } from 'react-router-dom';
 
 const useAuth = () => {
 	const user = localStorage.getItem('access_token');
-	return user ? true : false;
+	return { isAuthenticated: !!user };
 };
 
 export const AuthComponent = () => {
-	const auth = useAuth();
+	const { isAuthenticated } = useAuth();
 
-	return auth ? <Outlet /> : <Navigate to='/login' />;
+	return isAuthenticated ? <Outlet /> : <Navigate to='/login' />;
 };

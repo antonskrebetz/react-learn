@@ -43,10 +43,11 @@ export const CourseInfo = ({ courses, authors }: ICourseInfoProps) => {
 						<div className={styles.propsTitle}>Authors:</div>
 					</div>
 					{course?.authors.map((author) => {
-						const currentAuthor = authors.find((el) => el.id === author)?.name;
+						const currentAuthor = authors.find((el) => el.id === author);
+
 						return (
-							<p key={uuidv4()} className={styles.propsAuthor}>
-								{currentAuthor}
+							<p key={currentAuthor?.id} className={styles.propsAuthor}>
+								{currentAuthor?.name}
 							</p>
 						);
 					})}
