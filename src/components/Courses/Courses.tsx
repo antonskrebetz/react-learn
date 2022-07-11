@@ -1,62 +1,86 @@
 import { useNavigate } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../store/store';
+import { fetchCourses } from '../../store/courses/coursesSlice';
+import { fetchAuthors } from '../../store/authors/authorsSlice';
+
 import { CourseCard } from './components/CourseCard/CourseCard';
 import { getCourseDuration, formatCreationDate } from '../../helpers';
-import { ICourse, IAuthor } from '../../mockData';
 import { SearchBar } from './components/SearchBar/SearchBar';
 import { Button } from '../../common/Button/Button';
 import styles from './Courses.module.css';
 
-interface ICoursesProps {
-	courses: ICourse[];
-	authors: IAuthor[];
-	handleSearchInput: any;
-	handleClickSearchButton: any;
-	search: string;
-}
-
-export const Courses = ({
-	courses,
-	authors,
-	handleSearchInput,
-	handleClickSearchButton,
-	search,
-}: ICoursesProps) => {
+export const Courses = () => {
 	const navigate = useNavigate();
+	const dispatch = useAppDispatch();
+
+	const [showSearchCourses, setShowSearchCourses] = useState(false);
+
+	const coursesLoading = useAppSelector(
+		(state) => state.coursesReducer.coursesStatus
+	);
+
+	const authorsLoading = useAppSelector(
+		(state) => state.authorsReducer.authorsStatus
+	);
+
+	useEffect(() => {
+		dispatch(fetchCourses());
+		dispatch(fetchAuthors());
+	}, [dispatch]);
+
+	const courses = useAppSelector((state) => state.coursesReducer.coursesData);
+	const authors = useAppSelector((state) => state.authorsReducer.authorsData);
+	const search = useAppSelector((state) => state.coursesReducer.search);
+
 	const onClickAddNewCourse = () => {
 		navigate('add');
 	};
 
+	const filterCourses = useMemo(
+		() =>
+			courses.filter(
+				(el) =>
+					el.id.toLocaleLowerCase().includes(search.toLocaleLowerCase()) ||
+					el.title.toLocaleLowerCase().includes(search.toLocaleLowerCase())
+			),
+		[search, courses]
+	);
+
+	const displayedCourses = showSearchCourses ? filterCourses : courses;
+
 	return (
 		<div className={styles.main}>
 			<div className={styles.appBar}>
-				<SearchBar
-					onChange={handleSearchInput}
-					onClick={handleClickSearchButton}
-					value={search}
-				/>
+				<SearchBar setShowSearchCourses={setShowSearchCourses} />
 				<Button buttonText='Add new course' onClick={onClickAddNewCourse} />
 			</div>
 			<div>
-				{courses.map((course) => {
-					const authorsForCard = course.authors.map((authorId: string) => {
-						return authors.filter((author) => author.id === authorId)[0].name;
-					});
+				{(coursesLoading === 'loading' || authorsLoading === 'loading') && (
+					<h2>Loading...</h2>
+				)}
+				{!!courses.length &&
+					!!authors.length &&
+					displayedCourses.map((course) => {
+						const authorsForCard = course.authors.map((authorId: string) => {
+							return authors.filter((author) => author.id === authorId)[0].name;
+						});
 
-					const duration = getCourseDuration(course.duration || 0);
-					const creationDate = formatCreationDate(course.creationDate);
+						const duration = getCourseDuration(course.duration || 0);
+						const creationDate = formatCreationDate(course.creationDate);
 
-					return (
-						<CourseCard
-							key={course.id}
-							id={course.id}
-							title={course.title}
-							description={course.description}
-							creationDate={creationDate}
-							duration={duration}
-							authors={authorsForCard}
-						/>
-					);
-				})}
+						return (
+							<CourseCard
+								key={course.id}
+								id={course.id}
+								title={course.title}
+								description={course.description}
+								creationDate={creationDate}
+								duration={duration}
+								authors={authorsForCard}
+							/>
+						);
+					})}
 			</div>
 		</div>
 	);
