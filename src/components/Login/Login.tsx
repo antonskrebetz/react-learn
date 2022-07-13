@@ -3,12 +3,15 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Input } from '../../common/Input/Input';
 import { Button } from '../../common/Button/Button';
 import styles from './Login.module.css';
+import { fetchLoginUser } from '../../store/user/userSlice';
+import { useAppDispatch } from '../../store/store';
 
 export const Login = () => {
 	const [emailInput, setEmailInput] = useState('');
 	const [passwordInput, setPasswordInput] = useState('');
 
 	const navigate = useNavigate();
+	const dispatch = useAppDispatch();
 
 	const onChangeEmailInput = (value: string) => {
 		setEmailInput(value);
@@ -18,31 +21,46 @@ export const Login = () => {
 		setPasswordInput(value);
 	};
 
+	const user = JSON.stringify({ email: emailInput, password: passwordInput });
+
 	const onSubmitButton = async () => {
 		try {
-			const request = await fetch('http://localhost:4000/login', {
-				method: 'POST',
-				body: JSON.stringify({
-					email: emailInput,
-					password: passwordInput,
-				}),
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			});
-
-			const response = await request.json();
-
-			if (response.successful) {
-				localStorage.setItem('access_token', response.result);
-				localStorage.setItem('userName', response.user.name);
+			const result = await dispatch(fetchLoginUser(user)).unwrap();
+			if (result.successful) {
+				localStorage.setItem('access_token', result.result);
 				navigate('/courses');
 			} else {
 				alert('Email or password is wrong');
 			}
 		} catch (error) {
-			console.error('Error: ', error);
+			alert('Smth went wrong login system');
 		}
+
+		// try {
+		// 	const request = await fetch('http://localhost:4000/login', {
+		// 		method: 'POST',
+		// 		body: JSON.stringify({
+		// 			email: emailInput,
+		// 			password: passwordInput,
+		// 		}),
+		// 		headers: {
+		// 			'Content-Type': 'application/json',
+		// 		},
+		// 	});
+
+		// 	const response = await request.json();
+		// 	console.log(response);
+
+		// 	if (response.successful) {
+		// 		localStorage.setItem('access_token', response.result);
+		// 		localStorage.setItem('userName', response.user.name);
+		// 		navigate('/courses');
+		// 	} else {
+		// 		alert('Email or password is wrong');
+		// 	}
+		// } catch (error) {
+		// 	console.error('Error: ', error);
+		// }
 	};
 
 	return (

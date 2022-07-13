@@ -2,13 +2,17 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Logo } from './components/Logo/Logo';
 import { Button } from '../../common/Button/Button';
 import styles from './Header.module.css';
+import { useAppSelector, useAppDispatch } from '../../store/store';
+import { onLogout } from '../../store/user/userSlice';
 
 export const Header = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
-	const userName = localStorage.getItem('userName');
+	const dispatch = useAppDispatch();
+	const userName = useAppSelector((state) => state.userReducer.name);
 
-	const onLogoutClick = () => {
+	const onLogoutClick = async () => {
+		await dispatch(onLogout());
 		localStorage.clear();
 		navigate('/login');
 	};

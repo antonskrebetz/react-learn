@@ -45,6 +45,8 @@ export const CourseCard = ({
 					<div className={styles.detailBlockInfo}>{creationDate}</div>
 				</div>
 				<Button buttonText='Show course' onClick={onClickShowCourse} />
+				<Button buttonText='Update' />
+				<Button buttonText='Delete' />
 			</div>
 		</div>
 	);

@@ -1,16 +1,13 @@
 import { useParams, Link } from 'react-router-dom';
+import { useAppSelector } from '../../store/store';
 import { formatCreationDate, getCourseDuration } from '../../helpers';
-import { IAuthor, ICourse } from '../../mockData';
 import styles from './CourseInfo.module.css';
 
-interface ICourseInfoProps {
-	courses: ICourse[];
-	authors: IAuthor[];
-}
-
-export const CourseInfo = ({ courses, authors }: ICourseInfoProps) => {
+export const CourseInfo = () => {
 	let { courseID } = useParams();
 
+	const courses = useAppSelector((state) => state.coursesReducer.coursesData);
+	const authors = useAppSelector((state) => state.authorsReducer.authorsData);
 	const course = courses.find((course) => course.id === courseID);
 
 	return (

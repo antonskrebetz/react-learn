@@ -1,5 +1,9 @@
-import { Dispatch, SetStateAction, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAppSelector, useAppDispatch } from '../../store/store';
+// import { fetchAddCourse } from '../../store/courses/coursesSlice';
+import { addNewCourse } from '../../store/courses/coursesSlice';
+import { addAuthor } from '../../store/authors/authorsSlice';
 import { Button } from '../../common/Button/Button';
 import { Input } from '../../common/Input/Input';
 import { AuthorItem } from './components/AuthorItem/AuthorItem';
@@ -7,20 +11,14 @@ import { IAuthor, ICourse } from '../../mockData';
 import { getCourseDuration } from '../../helpers';
 import styles from './CreateCourse.module.css';
 import { v4 as uuidv4 } from 'uuid';
+// import { fetchAddCourse } from '../../store/courses/coursesSlice';
 
-interface ICreateCourseProps {
-	allAppAuthors: IAuthor[];
-	onHandleAddAuthor: (name: string) => void;
-	courses: ICourse[];
-	setCourses: Dispatch<SetStateAction<ICourse[]>>;
-}
+// interface ICreateCourseProps {
+// 	courses: ICourse[];
+// 	setCourses: Dispatch<SetStateAction<ICourse[]>>;
+// }
 
-export const CreateCourse = ({
-	allAppAuthors,
-	onHandleAddAuthor,
-	courses,
-	setCourses,
-}: ICreateCourseProps) => {
+export const CreateCourse = () => {
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
 	const [descriptionError, setDescriptionError] = useState(false);
@@ -29,7 +27,19 @@ export const CreateCourse = ({
 	const [duration, setDuration] = useState(0);
 
 	const navigate = useNavigate();
-	const handleAddNewCourse = (course: ICourse) => {
+	const dispatch = useAppDispatch();
+	const allAppAuthors = useAppSelector(
+		(state) => state.authorsReducer.authorsData
+	);
+
+	// const newCourse = JSON.stringify({
+	// 	title,
+	// 	description,
+	// 	duration,
+	// 	courseAuthors,
+	// });
+
+	const handleAddNewCourse = async (course: ICourse) => {
 		if (
 			course.title.length < 2 ||
 			course.description.length < 2 ||
@@ -38,7 +48,8 @@ export const CreateCourse = ({
 		) {
 			alert('Please, fill in all fields');
 		} else {
-			setCourses([...courses, course]);
+			// const result = await dispatch(fetchAddCourse(newCourse)).unwrap();
+			await dispatch(addNewCourse(course));
 			navigate('/courses');
 		}
 	};
@@ -58,6 +69,14 @@ export const CreateCourse = ({
 
 	const handleNameAuthor = (value: string) => {
 		setCreateAuthor(value);
+	};
+
+	const onClickAddAuthor = (name: string) => {
+		if (name.length < 2) {
+			return name;
+		}
+		dispatch(addAuthor({ name: createAuthor, id: uuidv4() }));
+		setCreateAuthor('');
 	};
 
 	const handleDuration = (value: string) => {
@@ -152,10 +171,7 @@ export const CreateCourse = ({
 						/>
 						<Button
 							buttonText={'Create author'}
-							onClick={() => {
-								onHandleAddAuthor(createAuthor);
-								setCreateAuthor('');
-							}}
+							onClick={() => onClickAddAuthor(createAuthor)}
 						/>
 					</div>
 					<div className={styles.sectionInfo}>
