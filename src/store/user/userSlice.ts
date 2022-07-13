@@ -38,7 +38,7 @@ const userSlice = createSlice({
 	name: 'user',
 	initialState,
 	reducers: {
-		onLogoutClickClearState: (state) => initialState,
+		onLogout: (state) => initialState,
 	},
 	extraReducers: {
 		[fetchLoginUser.fulfilled.type]: (
@@ -54,5 +54,5 @@ const userSlice = createSlice({
 });
 
 const { reducer, actions } = userSlice;
-export const { onLogoutClickClearState } = actions;
+export const { onLogout } = actions;
 export default reducer;

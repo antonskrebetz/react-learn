@@ -3,7 +3,7 @@ import { Logo } from './components/Logo/Logo';
 import { Button } from '../../common/Button/Button';
 import styles from './Header.module.css';
 import { useAppSelector, useAppDispatch } from '../../store/store';
-import { onLogoutClickClearState } from '../../store/user/userSlice';
+import { onLogout } from '../../store/user/userSlice';
 
 export const Header = () => {
 	const location = useLocation();
@@ -12,7 +12,7 @@ export const Header = () => {
 	const userName = useAppSelector((state) => state.userReducer.name);
 
 	const onLogoutClick = async () => {
-		await dispatch(onLogoutClickClearState());
+		await dispatch(onLogout());
 		localStorage.clear();
 		navigate('/login');
 	};
