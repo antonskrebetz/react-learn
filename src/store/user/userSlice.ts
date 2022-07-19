@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { httpService, _apiBase } from '../../services';
-import { IFulfilledLoginUser } from '../../types';
+import { IFulfilledLoginUser, IFulfilledUsersMe } from '../../types';
 
 const { request } = httpService();
 
@@ -11,10 +11,21 @@ export const fetchLoginUser = createAsyncThunk(
 	}
 );
 
+export const fetchUsersMe = createAsyncThunk(
+	'user/fetchUsersMe',
+	(token: string) => {
+		return request(`${_apiBase}users/me`, 'GET', null, {
+			Authorization: token,
+		});
+	}
+);
+
 export const fetchLogoutUser = createAsyncThunk(
 	'user/fetchLogoutUser',
-	(user: string) => {
-		return request(`${_apiBase}delete`, 'DELETE', user);
+	(token: string) => {
+		return request(`${_apiBase}delete`, 'DELETE', null, {
+			Authorization: token,
+		});
 	}
 );
 
@@ -37,22 +48,26 @@ const initialState: IInitialState = {
 const userSlice = createSlice({
 	name: 'user',
 	initialState,
-	reducers: {
-		onLogout: (state) => initialState,
-	},
+	reducers: {},
 	extraReducers: {
 		[fetchLoginUser.fulfilled.type]: (
 			state,
 			action: PayloadAction<IFulfilledLoginUser>
 		) => {
 			state.isAuth = action.payload.successful;
-			state.name = action.payload.user.name;
-			state.email = action.payload.user.email;
 			state.token = action.payload.result;
 		},
+		[fetchUsersMe.fulfilled.type]: (
+			state,
+			action: PayloadAction<IFulfilledUsersMe>
+		) => {
+			state.name = action.payload.result.name;
+			state.email = action.payload.result.email;
+			state.role = action.payload.result.role;
+		},
+		[fetchLogoutUser.fulfilled.type]: (state) => initialState,
 	},
 });
 
-const { reducer, actions } = userSlice;
-export const { onLogout } = actions;
+const { reducer } = userSlice;
 export default reducer;

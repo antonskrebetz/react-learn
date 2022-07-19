@@ -30,3 +30,39 @@ export interface IFulfilledLoginUser {
 	};
 	result: string;
 }
+
+export interface IFulfilledUsersMe {
+	successful: boolean;
+	result: {
+		name: string;
+		email: string;
+		password: string;
+		role: string;
+		id: string;
+	};
+}
+
+export interface IFulfilledCreateCourse {
+	successful: boolean;
+	result: {
+		title: string;
+		description: string;
+		duration: number;
+		authors: string[];
+		creationDate: string;
+		id: string;
+	};
+}
+
+export interface IFulfilledDeleteCourse {
+	successful: boolean;
+	result: string;
+}
+
+export interface IFulfilledAddAuthors {
+	successful: boolean;
+	result: {
+		name: string;
+		id: string;
+	};
+}

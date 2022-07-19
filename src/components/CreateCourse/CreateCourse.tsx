@@ -1,55 +1,96 @@
 import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../store/store';
-// import { fetchAddCourse } from '../../store/courses/coursesSlice';
-import { addNewCourse } from '../../store/courses/coursesSlice';
-import { addAuthor } from '../../store/authors/authorsSlice';
 import { Button } from '../../common/Button/Button';
 import { Input } from '../../common/Input/Input';
 import { AuthorItem } from './components/AuthorItem/AuthorItem';
-import { IAuthor, ICourse } from '../../mockData';
+import { IAuthor } from '../../mockData';
 import { getCourseDuration } from '../../helpers';
 import styles from './CreateCourse.module.css';
-import { v4 as uuidv4 } from 'uuid';
-// import { fetchAddCourse } from '../../store/courses/coursesSlice';
+import {
+	fetchCreateCourse,
+	fetchUpdateCourse,
+} from '../../store/courses/coursesSlice';
+import { fetchAddAuthors } from '../../store/authors/authorsSlice';
 
-// interface ICreateCourseProps {
-// 	courses: ICourse[];
-// 	setCourses: Dispatch<SetStateAction<ICourse[]>>;
-// }
+interface ICreateCourseProps {
+	isUpdate: boolean;
+}
 
-export const CreateCourse = () => {
-	const [title, setTitle] = useState('');
-	const [description, setDescription] = useState('');
-	const [descriptionError, setDescriptionError] = useState(false);
-	const [courseAuthors, setCourseAuthors] = useState<IAuthor[]>([]);
-	const [createAuthor, setCreateAuthor] = useState('');
-	const [duration, setDuration] = useState(0);
-
+export const CreateCourse = ({ isUpdate }: ICreateCourseProps) => {
+	let { courseId } = useParams();
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
+
+	const allAppCourses = useAppSelector(
+		(state) => state.coursesReducer.coursesData
+	);
 	const allAppAuthors = useAppSelector(
 		(state) => state.authorsReducer.authorsData
 	);
+	const userToken = useAppSelector((state) => state.userReducer.token);
 
-	// const newCourse = JSON.stringify({
-	// 	title,
-	// 	description,
-	// 	duration,
-	// 	courseAuthors,
-	// });
+	const currentUpdateCourse = allAppCourses.find(
+		(course) => course.id === courseId
+	);
+	const authorsUpdateCourse = currentUpdateCourse?.authors.map((author) =>
+		allAppAuthors.find((el) => el.id === author)
+	);
 
-	const handleAddNewCourse = async (course: ICourse) => {
+	const [title, setTitle] = useState(
+		isUpdate ? currentUpdateCourse?.title : ''
+	);
+	const [description, setDescription] = useState(
+		isUpdate ? currentUpdateCourse?.description : ''
+	);
+	const [descriptionError, setDescriptionError] = useState(false);
+	const [courseAuthors, setCourseAuthors] = useState<IAuthor[]>(
+		isUpdate ? (authorsUpdateCourse as []) : []
+	);
+	const [createAuthor, setCreateAuthor] = useState('');
+	const [duration, setDuration] = useState(
+		isUpdate ? currentUpdateCourse?.duration : 0
+	);
+
+	const courseAuthorsIds = courseAuthors.map((author) => author.id);
+
+	const newCourse = JSON.stringify({
+		title,
+		description,
+		duration,
+		authors: courseAuthorsIds,
+	});
+
+	interface ICourseHandle {
+		title: string | undefined;
+		description: string | undefined;
+		duration: number;
+		authors: string[];
+	}
+
+	const handleAddNewCourse = async (course: ICourseHandle) => {
 		if (
+			!course.title ||
 			course.title.length < 2 ||
+			!course.description ||
 			course.description.length < 2 ||
 			course.duration === 0 ||
 			course.authors.length < 1
 		) {
 			alert('Please, fill in all fields');
+		} else if (!isUpdate) {
+			await dispatch(
+				fetchCreateCourse({ course: newCourse, token: userToken })
+			);
+			navigate('/courses');
 		} else {
-			// const result = await dispatch(fetchAddCourse(newCourse)).unwrap();
-			await dispatch(addNewCourse(course));
+			await dispatch(
+				fetchUpdateCourse({
+					course: newCourse,
+					id: courseId as string,
+					token: userToken,
+				})
+			);
 			navigate('/courses');
 		}
 	};
@@ -71,11 +112,13 @@ export const CreateCourse = () => {
 		setCreateAuthor(value);
 	};
 
-	const onClickAddAuthor = (name: string) => {
+	const onClickAddAuthor = async (name: string) => {
 		if (name.length < 2) {
 			return name;
 		}
-		dispatch(addAuthor({ name: createAuthor, id: uuidv4() }));
+
+		const fetchName = JSON.stringify({ name });
+		await dispatch(fetchAddAuthors({ name: fetchName, token: userToken }));
 		setCreateAuthor('');
 	};
 
@@ -124,11 +167,9 @@ export const CreateCourse = () => {
 				/>
 				<Button
 					addClass={styles.createBtn}
-					buttonText='Create course'
+					buttonText={isUpdate ? 'Update course' : 'Create course'}
 					onClick={() =>
 						handleAddNewCourse({
-							id: uuidv4(),
-							creationDate: new Date().toLocaleDateString(),
 							title,
 							description,
 							duration: duration || 0,

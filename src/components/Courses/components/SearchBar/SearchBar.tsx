@@ -17,7 +17,6 @@ export const SearchBar = ({ setShowSearchCourses }: ISearchBar) => {
 	const handleSearchInput = (value: string) => {
 		setSearch(value);
 	};
-	console.log(search);
 
 	const onSearchClick = () => {
 		dispatch(searchCourses(search));

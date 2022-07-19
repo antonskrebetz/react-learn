@@ -8,7 +8,7 @@ interface IInputProps {
 	onChange: any;
 	addClass?: string;
 	id: string;
-	value: string | number;
+	value: string | number | undefined;
 	isNumberValue?: boolean;
 	searchInput?: boolean;
 	durationInput?: boolean;

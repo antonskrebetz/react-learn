@@ -3,7 +3,7 @@ export const httpService = () => {
 		url: string,
 		method = 'GET',
 		body: BodyInit | null = null,
-		headers = { 'Content-Type': 'application/json' }
+		headers: HeadersInit = { 'Content-Type': 'application/json' }
 	) => {
 		try {
 			const response = await fetch(url, { method, body, headers });
