@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../../../../common/Button/Button';
 import styles from './CourseCard.module.css';
+import { useAppSelector, useAppDispatch } from '../../../../store/store';
+import { fetchDeleteCourse } from '../../../../store/courses/coursesSlice';
 
 interface ICourseCard {
 	id: string;
@@ -20,9 +22,21 @@ export const CourseCard = ({
 	authors,
 }: ICourseCard) => {
 	const navigate = useNavigate();
+	const dispatch = useAppDispatch();
+
+	const userRole = useAppSelector((state) => state.userReducer.role);
+	const userToken = useAppSelector((state) => state.userReducer.token);
 
 	const onClickShowCourse = () => {
 		navigate(`/courses/${id}`);
+	};
+
+	const onClickDeleteCourse = async () => {
+		await dispatch(fetchDeleteCourse({ id, token: userToken }));
+	};
+
+	const onClickUpdateCourse = () => {
+		navigate(`/courses/update/${id}`);
 	};
 
 	return (
@@ -45,8 +59,12 @@ export const CourseCard = ({
 					<div className={styles.detailBlockInfo}>{creationDate}</div>
 				</div>
 				<Button buttonText='Show course' onClick={onClickShowCourse} />
-				<Button buttonText='Update' />
-				<Button buttonText='Delete' />
+				{userRole === 'admin' && (
+					<>
+						<Button buttonText='Update' onClick={onClickUpdateCourse} />
+						<Button buttonText='Delete' onClick={onClickDeleteCourse} />
+					</>
+				)}
 			</div>
 		</div>
 	);

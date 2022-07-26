@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/store';
 import { fetchCourses } from '../../store/courses/coursesSlice';
 import { fetchAuthors } from '../../store/authors/authorsSlice';
-
+import { fetchUsersMe } from '../../store/user/userSlice';
 import { CourseCard } from './components/CourseCard/CourseCard';
 import { getCourseDuration, formatCreationDate } from '../../helpers';
 import { SearchBar } from './components/SearchBar/SearchBar';
@@ -24,17 +24,25 @@ export const Courses = () => {
 		(state) => state.authorsReducer.authorsStatus
 	);
 
+	const userRole = useAppSelector((state) => state.userReducer.role);
+	const userToken = useAppSelector((state) => state.userReducer.token);
+
 	useEffect(() => {
 		dispatch(fetchCourses());
 		dispatch(fetchAuthors());
-	}, [dispatch]);
+		dispatch(fetchUsersMe(userToken));
+	}, [dispatch, userToken]);
 
 	const courses = useAppSelector((state) => state.coursesReducer.coursesData);
 	const authors = useAppSelector((state) => state.authorsReducer.authorsData);
 	const search = useAppSelector((state) => state.coursesReducer.search);
 
 	const onClickAddNewCourse = () => {
-		navigate('add');
+		if (userRole === 'admin') {
+			navigate('add');
+		} else {
+			alert('Only for admin');
+		}
 	};
 
 	const filterCourses = useMemo(
@@ -59,6 +67,7 @@ export const Courses = () => {
 				{(coursesLoading === 'loading' || authorsLoading === 'loading') && (
 					<h2>Loading...</h2>
 				)}
+				{courses.length === 0 && <div>No courses for displaying</div>}
 				{!!courses.length &&
 					!!authors.length &&
 					displayedCourses.map((course) => {

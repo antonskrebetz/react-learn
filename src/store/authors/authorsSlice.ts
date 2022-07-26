@@ -1,5 +1,9 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { IAuthor, IFulfilledAuthorsAction } from '../../types';
+import {
+	IAuthor,
+	IFulfilledAuthorsAction,
+	IFulfilledAddAuthors,
+} from '../../types';
 import { httpService, _apiBase } from '../../services';
 
 const { request } = httpService();
@@ -7,6 +11,21 @@ const { request } = httpService();
 export const fetchAuthors = createAsyncThunk('authors/fetchAuthors', () => {
 	return request(`${_apiBase}authors/all`);
 });
+
+interface IFetchAddAuthors {
+	name: string;
+	token: string;
+}
+
+export const fetchAddAuthors = createAsyncThunk(
+	'authors/fetchAddAuthors',
+	({ name, token }: IFetchAddAuthors) => {
+		return request(`${_apiBase}authors/add`, 'POST', name, {
+			Authorization: token,
+			'Content-Type': 'application/json',
+		});
+	}
+);
 
 interface IInitialState {
 	authorsStatus: string;
@@ -21,11 +40,7 @@ const initialState: IInitialState = {
 const authorsSlice = createSlice({
 	name: 'courses',
 	initialState,
-	reducers: {
-		addAuthor: (state, action) => {
-			state.authorsData.push(action.payload);
-		},
-	},
+	reducers: {},
 	extraReducers: {
 		[fetchAuthors.pending.type]: (state) => {
 			state.authorsStatus = 'loading';
@@ -40,9 +55,15 @@ const authorsSlice = createSlice({
 		[fetchAuthors.rejected.type]: (state) => {
 			state.authorsStatus = 'error';
 		},
+		[fetchAddAuthors.fulfilled.type]: (
+			state,
+			action: PayloadAction<IFulfilledAddAuthors>
+		) => {
+			state.authorsStatus = 'idle';
+			state.authorsData.push(action.payload.result);
+		},
 	},
 });
 
-const { reducer, actions } = authorsSlice;
+const { reducer } = authorsSlice;
 export default reducer;
-export const { addAuthor } = actions;

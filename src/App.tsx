@@ -11,6 +11,7 @@ import { Courses } from './components/Courses/Courses';
 import { CourseInfo } from './components/CourseInfo/CourseInfo';
 import { CreateCourse } from './components/CreateCourse/CreateCourse';
 import { AuthComponent } from './components/AuthComponent/AuthComponent';
+import { AdminAuthComponent } from './components/AdminAuthComponent/AdminAuthComponent';
 
 function App() {
 	return (
@@ -22,7 +23,16 @@ function App() {
 				<Route path='/' element={<AuthComponent />}>
 					<Route path='/' element={<Navigate to='/courses' />} />
 					<Route path='courses' element={<Courses />} />
-					<Route path='courses/add' element={<CreateCourse />} />
+					<Route element={<AdminAuthComponent />}>
+						<Route
+							path='courses/add'
+							element={<CreateCourse isUpdate={false} />}
+						/>
+						<Route
+							path='courses/update/:courseId'
+							element={<CreateCourse isUpdate />}
+						/>
+					</Route>
 					<Route path='courses/:courseID' element={<CourseInfo />} />
 				</Route>
 			</Routes>

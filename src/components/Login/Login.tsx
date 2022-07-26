@@ -35,32 +35,6 @@ export const Login = () => {
 		} catch (error) {
 			alert('Smth went wrong login system');
 		}
-
-		// try {
-		// 	const request = await fetch('http://localhost:4000/login', {
-		// 		method: 'POST',
-		// 		body: JSON.stringify({
-		// 			email: emailInput,
-		// 			password: passwordInput,
-		// 		}),
-		// 		headers: {
-		// 			'Content-Type': 'application/json',
-		// 		},
-		// 	});
-
-		// 	const response = await request.json();
-		// 	console.log(response);
-
-		// 	if (response.successful) {
-		// 		localStorage.setItem('access_token', response.result);
-		// 		localStorage.setItem('userName', response.user.name);
-		// 		navigate('/courses');
-		// 	} else {
-		// 		alert('Email or password is wrong');
-		// 	}
-		// } catch (error) {
-		// 	console.error('Error: ', error);
-		// }
 	};
 
 	return (

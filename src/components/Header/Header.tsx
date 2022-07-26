@@ -3,16 +3,17 @@ import { Logo } from './components/Logo/Logo';
 import { Button } from '../../common/Button/Button';
 import styles from './Header.module.css';
 import { useAppSelector, useAppDispatch } from '../../store/store';
-import { onLogout } from '../../store/user/userSlice';
+import { fetchLogoutUser } from '../../store/user/userSlice';
 
 export const Header = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
 	const userName = useAppSelector((state) => state.userReducer.name);
+	const userToken = useAppSelector((state) => state.userReducer.token);
 
 	const onLogoutClick = async () => {
-		await dispatch(onLogout());
+		await dispatch(fetchLogoutUser(userToken));
 		localStorage.clear();
 		navigate('/login');
 	};
