@@ -8,6 +8,15 @@ import { CourseCard } from './components/CourseCard/CourseCard';
 import { getCourseDuration, formatCreationDate } from '../../helpers';
 import { SearchBar } from './components/SearchBar/SearchBar';
 import { Button } from '../../common/Button/Button';
+import {
+	getUserRole,
+	getUserToken,
+	getCourses,
+	getAuthors,
+	getSearch,
+	getAuthorsLoading,
+	getCoursesLoading,
+} from '../../store/selectors';
 import styles from './Courses.module.css';
 
 export const Courses = () => {
@@ -16,16 +25,10 @@ export const Courses = () => {
 
 	const [showSearchCourses, setShowSearchCourses] = useState(false);
 
-	const coursesLoading = useAppSelector(
-		(state) => state.coursesReducer.coursesStatus
-	);
-
-	const authorsLoading = useAppSelector(
-		(state) => state.authorsReducer.authorsStatus
-	);
-
-	const userRole = useAppSelector((state) => state.userReducer.role);
-	const userToken = useAppSelector((state) => state.userReducer.token);
+	const coursesLoading = useAppSelector(getCoursesLoading);
+	const authorsLoading = useAppSelector(getAuthorsLoading);
+	const userRole = useAppSelector(getUserRole);
+	const userToken = useAppSelector(getUserToken);
 
 	useEffect(() => {
 		dispatch(fetchCourses());
@@ -33,9 +36,9 @@ export const Courses = () => {
 		dispatch(fetchUsersMe(userToken));
 	}, [dispatch, userToken]);
 
-	const courses = useAppSelector((state) => state.coursesReducer.coursesData);
-	const authors = useAppSelector((state) => state.authorsReducer.authorsData);
-	const search = useAppSelector((state) => state.coursesReducer.search);
+	const courses = useAppSelector(getCourses);
+	const authors = useAppSelector(getAuthors);
+	const search = useAppSelector(getSearch);
 
 	const onClickAddNewCourse = () => {
 		if (userRole === 'admin') {

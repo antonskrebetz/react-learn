@@ -4,13 +4,14 @@ import { Button } from '../../common/Button/Button';
 import styles from './Header.module.css';
 import { useAppSelector, useAppDispatch } from '../../store/store';
 import { fetchLogoutUser } from '../../store/user/userSlice';
+import { getUserName, getUserToken } from '../../store/selectors';
 
 export const Header = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
-	const userName = useAppSelector((state) => state.userReducer.name);
-	const userToken = useAppSelector((state) => state.userReducer.token);
+	const userName = useAppSelector(getUserName);
+	const userToken = useAppSelector(getUserToken);
 
 	const onLogoutClick = async () => {
 		await dispatch(fetchLogoutUser(userToken));

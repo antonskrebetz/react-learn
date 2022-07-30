@@ -40,7 +40,7 @@ export const CourseCard = ({
 	};
 
 	return (
-		<div className={styles.courseCard}>
+		<div className={styles.courseCard} data-testid='course-card'>
 			<div className={styles.leftSection}>
 				<h2 className={styles.title}>{title}</h2>
 				<div className={styles.description}>{description}</div>

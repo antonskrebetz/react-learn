@@ -9,11 +9,5 @@ export const getCourseDuration = (number: number | undefined) => {
 	const formatHours = isMore9(hours);
 	const formatMinutes = isMore9(minutes);
 
-	if (hours > 1 && hours < 10) {
-		return `${formatHours}:${formatMinutes} hours`;
-	} else if (hours > 10) {
-		return `${formatHours}:${formatMinutes} hours`;
-	} else {
-		return `${formatHours}:${formatMinutes} hour`;
-	}
+	return `${formatHours}:${formatMinutes} ${hours > 1 ? 'hours' : 'hour'}`;
 };
